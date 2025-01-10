@@ -53,6 +53,15 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Back"",
+                    ""type"": ""Button"",
+                    ""id"": ""1abfb8a9-4e05-4179-8c27-e9d42235cbf8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -88,6 +97,17 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Esc"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fff49e62-2b24-454d-8bf0-01a9df5be708"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -117,6 +137,15 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Esc"",
                     ""type"": ""Button"",
                     ""id"": ""ab3f045e-6f53-4e77-8004-090873abcdd5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Back"",
+                    ""type"": ""Button"",
+                    ""id"": ""d737d461-6fc4-4a75-b2d3-dd61a63325e9"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -156,6 +185,17 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Esc"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""052e1af8-fb02-45c7-a71e-204d1995c653"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -179,11 +219,13 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
         m_Player1_Move = m_Player1.FindAction("Move", throwIfNotFound: true);
         m_Player1_Attack = m_Player1.FindAction("Attack", throwIfNotFound: true);
         m_Player1_Esc = m_Player1.FindAction("Esc", throwIfNotFound: true);
+        m_Player1_Back = m_Player1.FindAction("Back", throwIfNotFound: true);
         // Player2
         m_Player2 = asset.FindActionMap("Player2", throwIfNotFound: true);
         m_Player2_Move = m_Player2.FindAction("Move", throwIfNotFound: true);
         m_Player2_Attack = m_Player2.FindAction("Attack", throwIfNotFound: true);
         m_Player2_Esc = m_Player2.FindAction("Esc", throwIfNotFound: true);
+        m_Player2_Back = m_Player2.FindAction("Back", throwIfNotFound: true);
     }
 
     ~@BotInputActions()
@@ -254,6 +296,7 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player1_Move;
     private readonly InputAction m_Player1_Attack;
     private readonly InputAction m_Player1_Esc;
+    private readonly InputAction m_Player1_Back;
     public struct Player1Actions
     {
         private @BotInputActions m_Wrapper;
@@ -261,6 +304,7 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player1_Move;
         public InputAction @Attack => m_Wrapper.m_Player1_Attack;
         public InputAction @Esc => m_Wrapper.m_Player1_Esc;
+        public InputAction @Back => m_Wrapper.m_Player1_Back;
         public InputActionMap Get() { return m_Wrapper.m_Player1; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -279,6 +323,9 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
             @Esc.started += instance.OnEsc;
             @Esc.performed += instance.OnEsc;
             @Esc.canceled += instance.OnEsc;
+            @Back.started += instance.OnBack;
+            @Back.performed += instance.OnBack;
+            @Back.canceled += instance.OnBack;
         }
 
         private void UnregisterCallbacks(IPlayer1Actions instance)
@@ -292,6 +339,9 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
             @Esc.started -= instance.OnEsc;
             @Esc.performed -= instance.OnEsc;
             @Esc.canceled -= instance.OnEsc;
+            @Back.started -= instance.OnBack;
+            @Back.performed -= instance.OnBack;
+            @Back.canceled -= instance.OnBack;
         }
 
         public void RemoveCallbacks(IPlayer1Actions instance)
@@ -316,6 +366,7 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player2_Move;
     private readonly InputAction m_Player2_Attack;
     private readonly InputAction m_Player2_Esc;
+    private readonly InputAction m_Player2_Back;
     public struct Player2Actions
     {
         private @BotInputActions m_Wrapper;
@@ -323,6 +374,7 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player2_Move;
         public InputAction @Attack => m_Wrapper.m_Player2_Attack;
         public InputAction @Esc => m_Wrapper.m_Player2_Esc;
+        public InputAction @Back => m_Wrapper.m_Player2_Back;
         public InputActionMap Get() { return m_Wrapper.m_Player2; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -341,6 +393,9 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
             @Esc.started += instance.OnEsc;
             @Esc.performed += instance.OnEsc;
             @Esc.canceled += instance.OnEsc;
+            @Back.started += instance.OnBack;
+            @Back.performed += instance.OnBack;
+            @Back.canceled += instance.OnBack;
         }
 
         private void UnregisterCallbacks(IPlayer2Actions instance)
@@ -354,6 +409,9 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
             @Esc.started -= instance.OnEsc;
             @Esc.performed -= instance.OnEsc;
             @Esc.canceled -= instance.OnEsc;
+            @Back.started -= instance.OnBack;
+            @Back.performed -= instance.OnBack;
+            @Back.canceled -= instance.OnBack;
         }
 
         public void RemoveCallbacks(IPlayer2Actions instance)
@@ -385,11 +443,13 @@ public partial class @BotInputActions: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnEsc(InputAction.CallbackContext context);
+        void OnBack(InputAction.CallbackContext context);
     }
     public interface IPlayer2Actions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnEsc(InputAction.CallbackContext context);
+        void OnBack(InputAction.CallbackContext context);
     }
 }

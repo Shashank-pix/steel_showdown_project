@@ -6,14 +6,19 @@ public class BotAttack : MonoBehaviour
 {
    
     [Header("Attack Settings")]
-    public int attackDamage = 2; // Damage dealt on attack
+    [SerializeField] private int attackDamage = 2; // Damage dealt on attack
 
     private bool isAttacking = false; // Flag to track attack input
+
+    [Header("Animation Setting")]
+
+    [SerializeField] private Animator animator;
 
     // Called by the Spawner when the Attack action is triggered
     public void OnAttackInput()
     {
         isAttacking = true; // Set attacking state
+        TriggerAttackAnimation();
         Debug.Log($"{gameObject.name} is ready to attack.");
     }
 
@@ -33,6 +38,14 @@ public class BotAttack : MonoBehaviour
                 targetHealth.TakeDamage(attackDamage);
                 Debug.Log($"{collision.gameObject.name} took {attackDamage} damage!");
             }
+        }
+    }
+
+    private void TriggerAttackAnimation()
+    {
+        if(animator != null)
+        {
+            animator.SetTrigger("Attack");
         }
     }
 }

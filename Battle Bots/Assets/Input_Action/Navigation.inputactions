@@ -1,0 +1,54 @@
+{
+    "name": "Navigation",
+    "maps": [
+        {
+            "name": "Navigation1",
+            "id": "cc3b6a86-424f-4e40-874e-8fe28555d9f9",
+            "actions": [
+                {
+                    "name": "OnNavigate",
+                    "type": "Value",
+                    "id": "64e98589-aba8-4fd4-9abe-27c562344307",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "OnSubmit",
+                    "type": "Button",
+                    "id": "93b0ec9c-2d7e-4dc8-bd4e-7114d53bdd69",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b860f6b9-f5d6-4ce4-875b-042f88214b05",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OnNavigate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e1ba80b6-0fc9-46a1-afa4-2392cae7a864",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OnSubmit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

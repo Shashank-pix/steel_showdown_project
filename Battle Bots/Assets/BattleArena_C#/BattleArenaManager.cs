@@ -183,8 +183,8 @@ public class BattleArenaManager : MonoBehaviour
         Debug.Log("Game Over: Transitioning to the next scene.");
         
         // Load the next scene (replace with the actual scene index or name)
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentSceneIndex + 1);
+        //int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene("GameOver");
     }
 
 

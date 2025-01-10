@@ -51,7 +51,7 @@ public class BotSpawner : MonoBehaviour
             if (player1Health != null)
             {
                 player1Health.healthBar = player1HealthBar; // Assign Player 1's health bar
-                player1Health.WinnerScene = "P2_Winner";
+                player1Health.WinnerScene = "P2WinnerFinal";
             }
 
             // Assign movement and attack inputs
@@ -78,7 +78,7 @@ public class BotSpawner : MonoBehaviour
             if (player2Health != null)
             {
                 player2Health.healthBar = player2HealthBar; // Assign Player 2's health bar
-                player2Health.WinnerScene = "P1_Winner";
+                player2Health.WinnerScene = "P1WinnerFinal";
                 
             }
 

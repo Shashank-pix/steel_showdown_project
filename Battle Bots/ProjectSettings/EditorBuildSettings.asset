@@ -7,7 +7,7 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
-    guid: c3bd6018855bbe04694a46076cc78987
+    guid: bcb40b23abc5b2342878c9ec1d671858
   - enabled: 1
     path: Assets/Scenes/SelectionMenu.unity
     guid: e89511a3d10517741a4a79a57698b412
@@ -15,12 +15,12 @@ EditorBuildSettings:
     path: Assets/Scenes/BattleArena.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
+    path: Assets/Scenes/P1WinnerFinal.unity
+    guid: c3bd6018855bbe04694a46076cc78987
+  - enabled: 1
+    path: Assets/Scenes/P2WinnerFinal.unity
+    guid: 41e90fa47387bbf4997a95f203470924
+  - enabled: 1
     path: Assets/Scenes/GameOver.unity
-    guid: f2b1788941720164baf47ff4d860d809
-  - enabled: 1
-    path: Assets/Scenes/P1_Winner.unity
-    guid: 546e19d46f05d514880d11a942ef8811
-  - enabled: 1
-    path: Assets/Scenes/P2_Winner.unity
-    guid: 47b343398ca1f724791f374c11f2e178
+    guid: 7de6c9abed2248b4799a4c2b125fab6a
   m_configObjects: {}
