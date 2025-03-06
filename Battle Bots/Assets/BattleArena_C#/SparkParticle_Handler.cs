@@ -37,7 +37,7 @@ public class SparkParticle_Handler : MonoBehaviour
             }
 
             //Destroy the particle system after its duration to avoid cluttering
-            Destroy(instantiatedParticles,2f);
+            Destroy(instantiatedParticles,1f);
         }
         else
         {

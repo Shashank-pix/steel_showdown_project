@@ -9,10 +9,11 @@ using UnityEngine.UI;
 
 public class BotHealth : MonoBehaviour
 {
+ 
 
 
 
-
+//---------------------------------------------------------------------------------------
 
    [SerializeField] private float maxHealth = 20f; // Maximum health
     public Slider healthBar; // Reference to the health bar UI
@@ -26,6 +27,10 @@ public class BotHealth : MonoBehaviour
 
     private Rigidbody _rigidbody;
 
+    public ParticleSystem Smoke;
+
+    public ParticleSystem Explosion;
+
 
     private void Start()
     {
@@ -38,6 +43,7 @@ public class BotHealth : MonoBehaviour
         }
 
         _rigidbody = GetComponent<Rigidbody>();
+        
     }
 
     public void TakeDamage(float damageAmount)
@@ -63,11 +69,24 @@ public class BotHealth : MonoBehaviour
            
         // }
 
+          // Check health and play the smoke effect if health is 20 or below
+        if (currentHealth <= 20 && Smoke != null && !Smoke.isPlaying)
+        {
+            Smoke.Play(); // Play the smoke effect
+        }
+
+
         Debug.Log($"{gameObject.name} Health: {currentHealth}/{maxHealth}");
 
         // Check if the bot's health is depleted
         if (currentHealth <= 0)
         {
+            if(Explosion != null )
+            {
+              
+              Explosion.Play();
+            }
+            
             //Die();
             StartCoroutine(HandleDeath());
         }
