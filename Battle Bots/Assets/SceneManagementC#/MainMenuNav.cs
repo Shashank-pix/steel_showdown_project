@@ -17,68 +17,73 @@ public class MainMenuNav : MonoBehaviour
     private InputAction navigateAction;
     private InputAction submitAction;
 
-    private float navigationThreshold = 0.5f; // Threshold for joystick movement
-    private bool canNavigate = true; // Prevents multiple rapid inputs
+    private float navigationThreshold = 0.5f; 
+    private bool canNavigate = true; 
 
     [Header("Gate Animators")]
-    [SerializeField] private Animator redFWAnimator;  // Red gate Animator
-    [SerializeField] private Animator blueFWAnimator; // Blue gate Animator
+    [SerializeField] private Animator redFWAnimator;  
+    [SerializeField] private Animator blueFWAnimator; 
 
     [Header("Animation Settings")]
     [SerializeField] private float gateAnimationDuration = 2.5f; 
 
+    [Header("Audio Settings")]
+    [SerializeField] private AudioSource hoverSFX; 
+    [SerializeField] private AudioSource confirmSFX; 
+    [SerializeField] private AudioSource quitSFX; // Quit sound effect
+    [SerializeField] private AudioSource gateCloseSFX; // Gate closing sound effect
+
     private void Awake()
     {
-        // Initialize input actions
         navigateAction = new InputAction("Navigate", binding: "<Gamepad>/leftStick");
         submitAction = new InputAction("Submit", binding: "<Gamepad>/buttonSouth");
 
-        // Add callbacks
         navigateAction.performed += OnNavigate;
         submitAction.performed += OnSubmit;
 
-        // Enable actions
         navigateAction.Enable();
         submitAction.Enable();
     }
 
     private void OnDestroy()
     {
-        // Disable actions when the object is destroyed
         navigateAction.Disable();
         submitAction.Disable();
     }
 
     public void OnNavigate(InputAction.CallbackContext context)
     {
-        if (!canNavigate) return; // Prevents rapid navigation
+        if (!canNavigate) return; 
 
         Vector2 navigation = context.ReadValue<Vector2>();
 
-        if (navigation.y > navigationThreshold) // Up
-        {
-            currentIndex = (currentIndex - 1 + images.Length) % images.Length;
-            canNavigate = false;
-        }
-        else if (navigation.y < -navigationThreshold) // Down
+        if (navigation.x > navigationThreshold) 
         {
             currentIndex = (currentIndex + 1) % images.Length;
             canNavigate = false;
         }
+        else if (navigation.x < -navigationThreshold) 
+        {
+            currentIndex = (currentIndex - 1 + images.Length) % images.Length;
+            canNavigate = false;
+        }
 
         UpdateSelection();
-
-        // Re-enable navigation after a short delay
-        Invoke(nameof(ResetNavigation), 0.2f); // Adjust the delay as needed
+        Invoke(nameof(ResetNavigation), 0.2f);
     }
 
     public void OnSubmit(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            if (currentIndex == 3) // Assuming 4th image is the quit option
+            if (confirmSFX != null)
             {
-                Application.Quit();
+                confirmSFX.Play();
+            }
+
+            if (currentIndex == 3) 
+            {
+                StartCoroutine(PlayGateAndQuit());
             }
             else if (currentIndex >= 0 && currentIndex < sceneNames.Length)
             {
@@ -87,38 +92,52 @@ public class MainMenuNav : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayGateAnimationsAndSwitchScene(string sceneNames)
+    private IEnumerator PlayGateAnimationsAndSwitchScene(string sceneName)
     {
+        Debug.Log("Triggering gate close animations...");
 
-          Debug.Log("Triggering gate close animations...");
+        if (gateCloseSFX != null)
+        {
+            gateCloseSFX.Play(); // Play gate close sound
+        }
 
-    // Trigger the closing animation from Any State
-    if (redFWAnimator != null)
-        redFWAnimator.SetTrigger("CloseGate");
+        if (redFWAnimator != null)
+            redFWAnimator.SetTrigger("CloseGate");
 
-    if (blueFWAnimator != null)
-        blueFWAnimator.SetTrigger("CloseGate");
+        if (blueFWAnimator != null)
+            blueFWAnimator.SetTrigger("CloseGate");
 
-    // Wait for animation to complete (set the correct duration)
-    yield return new WaitForSeconds(gateAnimationDuration);
+        yield return new WaitForSeconds(gateAnimationDuration);
 
-    Debug.Log("Animation finished. Switching scene...");
+        Debug.Log("Animation finished. Switching scene...");
+        SceneManager.LoadScene(sceneName);
+    }
 
-    SceneManager.LoadScene(sceneNames); // Load the next scene after animations finish
-        // if (redFWAnimator != null)
-        //     redFWAnimator.SetTrigger("CloseGate"); // Trigger Red gate animation
+    private IEnumerator PlayGateAndQuit()
+    {
+        Debug.Log("Closing gates before quitting...");
 
-        // if (blueFWAnimator != null)
-        //     blueFWAnimator.SetTrigger("CloseGate"); // Trigger Blue gate animation
+        if (gateCloseSFX != null)
+        {
+            gateCloseSFX.Play();
+        }
 
-        // // Wait for the longest animation to finish before switching scenes
-        // float redAnimationTime = redFWAnimator != null ? redFWAnimator.GetCurrentAnimatorStateInfo(0).length : 0f;
-        // float blueAnimationTime = blueFWAnimator != null ? blueFWAnimator.GetCurrentAnimatorStateInfo(0).length : 0f;
+        if (redFWAnimator != null)
+            redFWAnimator.SetTrigger("CloseGate");
 
-        // float maxAnimationTime = Mathf.Max(redAnimationTime, blueAnimationTime);
-        // yield return new WaitForSeconds(maxAnimationTime);
+        if (blueFWAnimator != null)
+            blueFWAnimator.SetTrigger("CloseGate");
 
-        // SceneManager.LoadScene(sceneName); // Load the next scene after animations finish
+        yield return new WaitForSeconds(gateAnimationDuration);
+
+        if (quitSFX != null)
+        {
+            quitSFX.Play();
+            yield return new WaitForSeconds(quitSFX.clip.length);
+        }
+
+        Debug.Log("Quitting Game...");
+        Application.Quit();
     }
 
     private void UpdateSelection()
@@ -126,7 +145,12 @@ public class MainMenuNav : MonoBehaviour
         for (int i = 0; i < images.Length; i++)
         {
             bool isSelected = (i == currentIndex);
-            texts[i].gameObject.SetActive(isSelected); // Enable/disable text based on selection
+            texts[i].gameObject.SetActive(isSelected);
+
+            if (isSelected && hoverSFX != null)
+            {
+                hoverSFX.Play();
+            }
         }
     }
 
@@ -135,11 +159,8 @@ public class MainMenuNav : MonoBehaviour
         canNavigate = true;
     }
 
-
-
-
-    //================================================================
-    // [Header("Menu Settings")]
+    //-------------------------------------------
+    //  [Header("Menu Settings")]
     // [SerializeField] private Image[] images;
     // [SerializeField] private TMP_Text[] texts;
     // [SerializeField] private string[] sceneNames;
@@ -149,67 +170,94 @@ public class MainMenuNav : MonoBehaviour
     // private InputAction navigateAction;
     // private InputAction submitAction;
 
-    // private float navigationThreshold = 0.5f; // Threshold for joystick movement
-    // private bool canNavigate = true; // Prevents multiple rapid inputs
+    // private float navigationThreshold = 0.5f;
+    // private bool canNavigate = true;
+
+    // [Header("Gate Animators")]
+    // [SerializeField] private Animator redFWAnimator;
+    // [SerializeField] private Animator blueFWAnimator;
+
+    // [Header("Animation Settings")]
+    // [SerializeField] private float gateAnimationDuration = 2.5f;
+
+    // [Header("Audio Settings")]
+    // [SerializeField] private AudioSource hoverSFX; // Sound effect for hovering
+    // [SerializeField] private AudioSource confirmSFX; // Sound effect for confirming selection
 
     // private void Awake()
     // {
-    //     // Initialize input actions
     //     navigateAction = new InputAction("Navigate", binding: "<Gamepad>/leftStick");
     //     submitAction = new InputAction("Submit", binding: "<Gamepad>/buttonSouth");
 
-    //     // Add callbacks
     //     navigateAction.performed += OnNavigate;
     //     submitAction.performed += OnSubmit;
 
-    //     // Enable actions
     //     navigateAction.Enable();
     //     submitAction.Enable();
     // }
 
     // private void OnDestroy()
     // {
-    //     // Disable actions when the object is destroyed
     //     navigateAction.Disable();
     //     submitAction.Disable();
     // }
 
     // public void OnNavigate(InputAction.CallbackContext context)
     // {
-    //     if (!canNavigate) return; // Prevents rapid navigation
+    //     if (!canNavigate) return;
 
     //     Vector2 navigation = context.ReadValue<Vector2>();
 
-    //     if (navigation.y > navigationThreshold) // Up
-    //     {
-    //         currentIndex = (currentIndex - 1 + images.Length) % images.Length;
-    //         canNavigate = false;
-    //     }
-    //     else if (navigation.y < -navigationThreshold) // Down
+    //     if (navigation.x > navigationThreshold)
     //     {
     //         currentIndex = (currentIndex + 1) % images.Length;
     //         canNavigate = false;
     //     }
+    //     else if (navigation.x < -navigationThreshold)
+    //     {
+    //         currentIndex = (currentIndex - 1 + images.Length) % images.Length;
+    //         canNavigate = false;
+    //     }
 
     //     UpdateSelection();
-
-    //     // Re-enable navigation after a short delay
-    //     Invoke(nameof(ResetNavigation), 0.2f); // Adjust the delay as needed
+    //     Invoke(nameof(ResetNavigation), 0.2f);
     // }
 
     // public void OnSubmit(InputAction.CallbackContext context)
     // {
     //     if (context.performed)
     //     {
-    //         if (currentIndex == 3) // Assuming 4th image is the quit option
+    //         // Play confirm SFX
+    //         if (confirmSFX != null)
+    //         {
+    //             confirmSFX.Play();
+    //         }
+
+    //         if (currentIndex == 3)
     //         {
     //             Application.Quit();
     //         }
     //         else if (currentIndex >= 0 && currentIndex < sceneNames.Length)
     //         {
-    //             SceneManager.LoadScene(sceneNames[currentIndex]);
+    //             StartCoroutine(PlayGateAnimationsAndSwitchScene(sceneNames[currentIndex]));
     //         }
     //     }
+    // }
+
+    // private IEnumerator PlayGateAnimationsAndSwitchScene(string sceneName)
+    // {
+    //     Debug.Log("Triggering gate close animations...");
+
+    //     if (redFWAnimator != null)
+    //         redFWAnimator.SetTrigger("CloseGate");
+
+    //     if (blueFWAnimator != null)
+    //         blueFWAnimator.SetTrigger("CloseGate");
+
+    //     yield return new WaitForSeconds(gateAnimationDuration);
+
+    //     Debug.Log("Animation finished. Switching scene...");
+    //     SceneManager.LoadScene(sceneName);
     // }
 
     // private void UpdateSelection()
@@ -217,8 +265,12 @@ public class MainMenuNav : MonoBehaviour
     //     for (int i = 0; i < images.Length; i++)
     //     {
     //         bool isSelected = (i == currentIndex);
-    //         texts[i].gameObject.SetActive(isSelected); // Enable/disable text based on selection
-    //         //images[i].color = isSelected ? Color.green : Color.white; // Optional: change color to indicate selection
+    //         texts[i].gameObject.SetActive(isSelected);
+
+    //         if (isSelected && hoverSFX != null)
+    //         {
+    //             hoverSFX.Play(); // Play hover sound effect when highlighting a new option
+    //         }
     //     }
     // }
 
@@ -226,4 +278,7 @@ public class MainMenuNav : MonoBehaviour
     // {
     //     canNavigate = true;
     // }
+
+    
+
 }

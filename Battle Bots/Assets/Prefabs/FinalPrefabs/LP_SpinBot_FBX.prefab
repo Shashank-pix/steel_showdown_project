@@ -19962,6 +19962,8 @@ GameObject:
   - component: {fileID: 3501094399406549129}
   - component: {fileID: 651298797591229234}
   - component: {fileID: -658197147757367162}
+  - component: {fileID: -2721243509696351290}
+  - component: {fileID: 6804080492833373627}
   m_Layer: 0
   m_Name: LP_SpinBot_FBX
   m_TagString: Bot
@@ -20104,6 +20106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDamage: 4
+  attackCooldown: 1
   animator: {fileID: 393441318430333293}
 --- !u!114 &651298797591229234
 MonoBehaviour:
@@ -20138,6 +20141,34 @@ MonoBehaviour:
   ParticleSystem_Prefab: {fileID: 7201104393620412200, guid: df67fbc73ad00ef44a554f5fbd386f47,
     type: 3}
   CustomSpawnPoint: {fileID: 2368807593763743857}
+--- !u!114 &-2721243509696351290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2546051864629620370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24b300ff80069b54fb8ba5dc6c8c3b98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6804080492833373627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2546051864629620370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef83543e0e0da114a85181a9267254b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionSFX:
+  - {fileID: 8300000, guid: efe1c86f8c4898d4ab91f61bd2a7f2d3, type: 3}
+  - {fileID: 8300000, guid: 3f5ea1263b6d3534782de804ab632e86, type: 3}
+  - {fileID: 8300000, guid: 326f578ae9a7af24aa368744810d01bb, type: 3}
 --- !u!1 &2796044399466445818
 GameObject:
   m_ObjectHideFlags: 0

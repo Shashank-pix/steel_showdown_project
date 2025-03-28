@@ -44,6 +44,24 @@ public partial class @Navigation: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Confirm1"",
+                    ""type"": ""Button"",
+                    ""id"": ""cbdefbfc-554d-4544-8b2e-871ae82579a0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Confirm2"",
+                    ""type"": ""Button"",
+                    ""id"": ""7e04444c-4bdc-4657-8681-b5ddc16b6c00"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -68,6 +86,28 @@ public partial class @Navigation: IInputActionCollection2, IDisposable
                     ""action"": ""OnSubmit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""983960f4-5712-45c0-98e5-66ab4782d20d"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Confirm1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ce468e01-7d6e-4573-b06e-02edb32b9a46"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Confirm2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -78,6 +118,8 @@ public partial class @Navigation: IInputActionCollection2, IDisposable
         m_Navigation1 = asset.FindActionMap("Navigation1", throwIfNotFound: true);
         m_Navigation1_OnNavigate = m_Navigation1.FindAction("OnNavigate", throwIfNotFound: true);
         m_Navigation1_OnSubmit = m_Navigation1.FindAction("OnSubmit", throwIfNotFound: true);
+        m_Navigation1_Confirm1 = m_Navigation1.FindAction("Confirm1", throwIfNotFound: true);
+        m_Navigation1_Confirm2 = m_Navigation1.FindAction("Confirm2", throwIfNotFound: true);
     }
 
     ~@Navigation()
@@ -146,12 +188,16 @@ public partial class @Navigation: IInputActionCollection2, IDisposable
     private List<INavigation1Actions> m_Navigation1ActionsCallbackInterfaces = new List<INavigation1Actions>();
     private readonly InputAction m_Navigation1_OnNavigate;
     private readonly InputAction m_Navigation1_OnSubmit;
+    private readonly InputAction m_Navigation1_Confirm1;
+    private readonly InputAction m_Navigation1_Confirm2;
     public struct Navigation1Actions
     {
         private @Navigation m_Wrapper;
         public Navigation1Actions(@Navigation wrapper) { m_Wrapper = wrapper; }
         public InputAction @OnNavigate => m_Wrapper.m_Navigation1_OnNavigate;
         public InputAction @OnSubmit => m_Wrapper.m_Navigation1_OnSubmit;
+        public InputAction @Confirm1 => m_Wrapper.m_Navigation1_Confirm1;
+        public InputAction @Confirm2 => m_Wrapper.m_Navigation1_Confirm2;
         public InputActionMap Get() { return m_Wrapper.m_Navigation1; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -167,6 +213,12 @@ public partial class @Navigation: IInputActionCollection2, IDisposable
             @OnSubmit.started += instance.OnOnSubmit;
             @OnSubmit.performed += instance.OnOnSubmit;
             @OnSubmit.canceled += instance.OnOnSubmit;
+            @Confirm1.started += instance.OnConfirm1;
+            @Confirm1.performed += instance.OnConfirm1;
+            @Confirm1.canceled += instance.OnConfirm1;
+            @Confirm2.started += instance.OnConfirm2;
+            @Confirm2.performed += instance.OnConfirm2;
+            @Confirm2.canceled += instance.OnConfirm2;
         }
 
         private void UnregisterCallbacks(INavigation1Actions instance)
@@ -177,6 +229,12 @@ public partial class @Navigation: IInputActionCollection2, IDisposable
             @OnSubmit.started -= instance.OnOnSubmit;
             @OnSubmit.performed -= instance.OnOnSubmit;
             @OnSubmit.canceled -= instance.OnOnSubmit;
+            @Confirm1.started -= instance.OnConfirm1;
+            @Confirm1.performed -= instance.OnConfirm1;
+            @Confirm1.canceled -= instance.OnConfirm1;
+            @Confirm2.started -= instance.OnConfirm2;
+            @Confirm2.performed -= instance.OnConfirm2;
+            @Confirm2.canceled -= instance.OnConfirm2;
         }
 
         public void RemoveCallbacks(INavigation1Actions instance)
@@ -198,5 +256,7 @@ public partial class @Navigation: IInputActionCollection2, IDisposable
     {
         void OnOnNavigate(InputAction.CallbackContext context);
         void OnOnSubmit(InputAction.CallbackContext context);
+        void OnConfirm1(InputAction.CallbackContext context);
+        void OnConfirm2(InputAction.CallbackContext context);
     }
 }

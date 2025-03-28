@@ -4,227 +4,159 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 
 
 public class BotHealth : MonoBehaviour
 {
- 
-
-
-
-//---------------------------------------------------------------------------------------
-
-   [SerializeField] private float maxHealth = 20f; // Maximum health
-    public Slider healthBar; // Reference to the health bar UI
-
-    public string WinnerScene = "WinnerMenu";//Scene Index
+    
+  [SerializeField] private float maxHealth = 20f;
+    public Slider healthBar;
+    public string WinnerScene = "WinnerMenu";
 
     private float currentHealth;
-
-    
-    public float lerpSpeed = 5f; // Speed of the Lerp animation for the health bar
-
+    public float lerpSpeed = 5f;
     private Rigidbody _rigidbody;
 
     public ParticleSystem Smoke;
-
     public ParticleSystem Explosion;
 
+    private PlayerInput playerInput; // Reference to PlayerInput component
 
     private void Start()
     {
-        // Initialize health and health bar
         currentHealth = maxHealth;
         if (healthBar != null)
         {
-            healthBar.maxValue = maxHealth; // Match slider max value with maxHealth
-            healthBar.value = currentHealth; // Initialize slider value
+            healthBar.maxValue = maxHealth;
+            healthBar.value = currentHealth;
         }
 
         _rigidbody = GetComponent<Rigidbody>();
-        
+        playerInput = GetComponent<PlayerInput>(); // Get PlayerInput component
     }
 
     public void TakeDamage(float damageAmount)
     {
-        // Reduce health
-       // currentHealth -= damageAmount; 
-        // Ensure health stays in bounds
-       // currentHealth = Mathf.Clamp(currentHealth,0, maxHealth); 
-
-       // Reduce health
         float newHealth = Mathf.Clamp(currentHealth - damageAmount, 0, maxHealth);
 
         // Smoothly update health bar using Lerp
         StartCoroutine(UpdateHealthBar(currentHealth, newHealth));
 
-        currentHealth = newHealth;
-        
-
-        // // Update the health bar UI
-        // if (healthBar != null)
-        // {
-        //   //  healthBar.value = currentHealth; // Directly update slider value
-           
-        // }
-
-          // Check health and play the smoke effect if health is 20 or below
-        if (currentHealth <= 20 && Smoke != null && !Smoke.isPlaying)
+        // Trigger rumble when health decreases
+        if (newHealth < currentHealth)
         {
-            Smoke.Play(); // Play the smoke effect
+            StartCoroutine(RumbleEffect());
         }
 
+        currentHealth = newHealth;
+
+        // Play smoke effect if health is low
+        if (currentHealth <= 20 && Smoke != null && !Smoke.isPlaying)
+        {
+            Smoke.Play();
+        }
 
         Debug.Log($"{gameObject.name} Health: {currentHealth}/{maxHealth}");
 
-        // Check if the bot's health is depleted
         if (currentHealth <= 0)
         {
-            if(Explosion != null )
+            if (Explosion != null)
             {
-              
-              Explosion.Play();
+                Explosion.Play();
             }
-            
-            //Die();
+
             StartCoroutine(HandleDeath());
         }
     }
 
-     private IEnumerator UpdateHealthBar(float startHealth, float endHealth)
+    private IEnumerator UpdateHealthBar(float startHealth, float endHealth)
     {
         float elapsedTime = 0f;
         while (elapsedTime < 1f / lerpSpeed)
         {
             if (healthBar != null)
             {
-                // Smoothly transition between current and new health values
                 healthBar.value = Mathf.Lerp(startHealth, endHealth, elapsedTime * lerpSpeed);
             }
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        // Ensure the health bar value is set to the final health
         if (healthBar != null)
         {
             healthBar.value = endHealth;
         }
     }
 
-     private IEnumerator HandleDeath()
+    private IEnumerator HandleDeath()
     {
-
-    //     Debug.Log($"{gameObject.name} has been destroyed.");
-
-    //     // Delay for a brief moment before loading the winner scene
-    //     yield return new WaitForSeconds(1f); // 1-second delay
-
-    //     // Check which player won and disable the appropriate bot
-    //     GameObject player1Bot = GameObject.FindGameObjectWithTag("Player1Bot");
-    //     GameObject player2Bot = GameObject.FindGameObjectWithTag("Player2Bot");
-
-    //     if (gameObject.CompareTag("Player1Bot"))
-    //     {
-    //         // Player 1 wins
-    //         if (player1Bot != null)
-    //         {
-    //             player1Bot.SetActive(true); // Enable Player 1's bot
-    //         }
-
-    //         if (player2Bot != null)
-    //         {
-    //             player2Bot.SetActive(false); // Disable Player 2's bot
-    //         }
-
-    //         Debug.Log("Player 1 Wins!");
-    //     }
-    //     else if (gameObject.CompareTag("Player2Bot"))
-    //     {
-    //         // Player 2 wins
-    //         if (player2Bot != null)
-    //         {
-    //             player2Bot.SetActive(true); // Enable Player 2's bot
-    //         }
-
-    //         if (player1Bot != null)
-    //         {
-    //             player1Bot.SetActive(false); // Disable Player 1's bot
-    //         }
-
-    //         Debug.Log("Player 2 Wins!");
-    //     }
-
-    //     // Load the winner scene
-    //     if (!string.IsNullOrEmpty(WinnerScene))
-    //     {
-    //         SceneManager.LoadScene(WinnerScene); // Load the winner scene
-    //     }
-    //     else
-    //     {
-    //         Debug.LogError("WinnerScene not assigned!");
-    //     }
-    // }
-        
         Debug.Log($"{gameObject.name} has been destroyed.");
-       // gameObject.SetActive(false);
 
-       if(_rigidbody != null)
-       {
-        _rigidbody.isKinematic = true;
-       }
-      
-       // Destroy(gameObject); //Remove Bot from scene
-        yield return new WaitForSeconds(1f); // 1-second delay
+        if (_rigidbody != null)
+        {
+            _rigidbody.isKinematic = true;
+        }
 
-         
+        yield return new WaitForSeconds(1f);
+
         if (!string.IsNullOrEmpty(WinnerScene))
         {
-            SceneManager.LoadScene(WinnerScene); // Load the winner scene
+            SceneManager.LoadScene(WinnerScene);
         }
         else
         {
             Debug.LogError("WinnerScene not assigned!");
         }
     }
-    
 
-    private void  OnCollisionEnter(Collision other)
+    private void OnCollisionEnter(Collision other)
     {
-        if(other.gameObject.CompareTag("Obstacles"))
+        if (other.gameObject.CompareTag("Obstacles"))
         {
-            Debug.Log($"{gameObject.name} collided with a Roller");
-            TakeDamage(0.8f);//Reduces the health by 1hp
+            Debug.Log($"{gameObject.name} collided with an obstacle");
+            TakeDamage(0.8f);
         }
     }
 
-    private void  OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-       if(other.gameObject.CompareTag("Obstacles")) 
-       {
-        Debug.Log($"{gameObject.name} collided with fire");
-        TakeDamage(1f);
-       }
+        if (other.gameObject.CompareTag("Obstacles"))
+        {
+            Debug.Log($"{gameObject.name} collided with fire");
+            TakeDamage(1f);
+        }
     }
 
-    // private void Die()
-    // {
-    //     Debug.Log($"{gameObject.name} has been destroyed.");
-    //     Destroy(gameObject); // Remove the bot from the scene
+    private IEnumerator RumbleEffect()
+    {
+        Gamepad gamepad = GetPlayerGamepad();
+        if (gamepad != null)
+        {
+            gamepad.SetMotorSpeeds(0.7f, 0.7f); // Light rumble
+            yield return new WaitForSeconds(0.2f); // Short duration
+            gamepad.SetMotorSpeeds(0, 0); // Stop rumble
+        }
+    }
 
-    //     if(!string.IsNullOrEmpty(WinnerScene))
-    //     {
-    //         Invoke(nameof(LoadScene),1f);
-    //     }
-    // }
-
-    // void LoadScene()
-    // {
-    //     SceneManager.LoadScene(WinnerScene);
-    // }
+    private Gamepad GetPlayerGamepad()
+    {
+        if (playerInput != null && playerInput.devices.Count > 0)
+        {
+            foreach (var device in playerInput.devices)
+            {
+                if (device is Gamepad gamepad)
+                {
+                    return gamepad; // Return the assigned gamepad
+                }
+            }
+        }
+        return null;
+    }
+   
 }
-//---------------------------------------------------------------------
+
  
 
 

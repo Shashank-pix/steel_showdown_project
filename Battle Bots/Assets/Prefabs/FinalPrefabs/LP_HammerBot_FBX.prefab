@@ -25654,6 +25654,8 @@ GameObject:
   - component: {fileID: 6889739125415441751}
   - component: {fileID: 5290008297926664635}
   - component: {fileID: -3303343936366378649}
+  - component: {fileID: -7201896963572847354}
+  - component: {fileID: 1802713597489671602}
   m_Layer: 0
   m_Name: LP_HammerBot_FBX
   m_TagString: Bot
@@ -25797,6 +25799,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDamage: 3
+  attackCooldown: 1
   animator: {fileID: 3728659050128543772}
 --- !u!114 &5290008297926664635
 MonoBehaviour:
@@ -25831,6 +25834,34 @@ MonoBehaviour:
   ParticleSystem_Prefab: {fileID: 7201104393620412200, guid: df67fbc73ad00ef44a554f5fbd386f47,
     type: 3}
   CustomSpawnPoint: {fileID: 8036364587137481183}
+--- !u!114 &-7201896963572847354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8859641233665792917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24b300ff80069b54fb8ba5dc6c8c3b98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1802713597489671602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8859641233665792917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef83543e0e0da114a85181a9267254b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionSFX:
+  - {fileID: 8300000, guid: efe1c86f8c4898d4ab91f61bd2a7f2d3, type: 3}
+  - {fileID: 8300000, guid: 3f5ea1263b6d3534782de804ab632e86, type: 3}
+  - {fileID: 8300000, guid: 326f578ae9a7af24aa368744810d01bb, type: 3}
 --- !u!1 &8942434369392489596
 GameObject:
   m_ObjectHideFlags: 0

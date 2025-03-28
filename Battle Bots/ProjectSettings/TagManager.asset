@@ -45,3 +45,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Top_Layer
+    uniqueID: 2193949133
+    locked: 0

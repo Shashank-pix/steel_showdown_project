@@ -5,109 +5,84 @@ using UnityEngine;
 
 public class ParticleController : MonoBehaviour
 {
-      [Header("ParticleSystem Settings")]
-    [SerializeField] private List<ParticleSystem> FireParticle; // List of particle systems
+     [Header("ParticleSystem Settings")]
+    [SerializeField] private List<ParticleSystem> FireParticles; // List of fire particle systems
+    [SerializeField] private List<int> InitialActiveIndices; // Indices of the first 4 particles
 
     [Header("Timing Settings")]
-    [SerializeField] private float ActiveFireDuration = 3f; // The fire particle will play for 3 seconds
-    [SerializeField] private float InActiveFireDuration = 3f; // After every 5 seconds, the particle will play
+    [SerializeField] private float InitialDuration = 3f;  // First 3s with 4 chosen particles
+    [SerializeField] private float ActiveFireDuration = 3f;  // Fire stays active for this duration
+    [SerializeField] private float InActiveFireDuration = 3f; // Wait time before activating another fire
 
-    // Start is called before the first frame update
     void Start()
     {
-        if (FireParticle == null || FireParticle.Count == 0)
+        if (FireParticles == null || FireParticles.Count < 4)
         {
-            Debug.LogError("Particle system not assigned");
+            Debug.LogError("At least 4 fire particle systems are required.");
             return;
         }
 
+        if (InitialActiveIndices.Count != 4)
+        {
+            Debug.LogError("Please assign exactly 4 indices in the InitialActiveIndices list.");
+            return;
+        }
+
+        StartCoroutine(InitializeParticles());
+    }
+
+    private IEnumerator InitializeParticles()
+    {
+        // Activate the first 4 specific particles
+        foreach (var particle in FireParticles)
+        {
+            particle.gameObject.SetActive(false);
+        }
+
+        foreach (int index in InitialActiveIndices)
+        {
+            if (index >= 0 && index < FireParticles.Count)
+            {
+                FireParticles[index].gameObject.SetActive(true);
+            }
+        }
+
+        yield return new WaitForSeconds(InitialDuration); // Keep them active for 3 seconds
+
+        // Start the normal cycle
         StartCoroutine(ManageParticleSystem());
     }
 
     private IEnumerator ManageParticleSystem()
     {
-        while (true) // This will keep looping
+        while (true)
         {
-            foreach (var particleSystem in FireParticle)
+            // Deactivate all particles before activating new ones
+            foreach (var particle in FireParticles)
             {
-                if (particleSystem != null) // Ensure the particle system is assigned
-                {
-                    particleSystem.gameObject.SetActive(true);
-                    yield return new WaitForSeconds(Random.Range(0f, ActiveFireDuration / FireParticle.Count)); // Random delay for each activation
-                }
+                particle.gameObject.SetActive(false);
             }
 
-            yield return new WaitForSeconds(ActiveFireDuration); // Keep particles active for the defined duration
-
-            foreach (var particleSystem in FireParticle)
+            // Select two unique random indices
+            int index1 = Random.Range(0, FireParticles.Count);
+            int index2;
+            do
             {
-                if (particleSystem != null) // Ensure the particle system is assigned
-                {
-                    particleSystem.gameObject.SetActive(false);
-                    yield return new WaitForSeconds(Random.Range(0f, InActiveFireDuration / FireParticle.Count)); // Random delay for deactivation
-                }
-            }
+                index2 = Random.Range(0, FireParticles.Count);
+            } while (index2 == index1); // Ensure the second index is different
 
-            yield return new WaitForSeconds(InActiveFireDuration); // Wait before the next cycle
+            // Activate the two selected fire particles
+            FireParticles[index1].gameObject.SetActive(true);
+            FireParticles[index2].gameObject.SetActive(true);
+
+            yield return new WaitForSeconds(ActiveFireDuration); // Keep them active
+
+            yield return new WaitForSeconds(InActiveFireDuration); // Wait before switching
         }
     }
 
 
-    //-----------------------------------------------------
-//     [Header("ParticleSystem Settings")]
-//     [SerializeField] private List<ParticleSystem> FireParticle; // list of particles
+    
 
-//     [Header("Timing Settings")]
-//     [SerializeField] private float ActiveFireDuration = 3f; //The fire particle will play for 3 seconds
-//     [SerializeField]private float InActiveFireDuration = 3f; //after every 5 seconds the particle will play
-
-//     // Start is called before the first frame update
-//     void Start()
-//     {
-//         if(FireParticle == null || FireParticle.Count ==0)
-//         {
-//             Debug.LogError("Particle system not assigned");
-//             return;
-//         }
-
-//         StartCoroutine (ManageParticleSystem());
-//     }
-
-//   private IEnumerator ManageParticleSystem()
-//    {
-
-//     while(true) // it will be playing in loop
-//     {
-//         foreach(var ParticleSystem in FireParticle)
-//         {
-//             if(ParticleSystem != null) // if the particle system assigned
-//             {
-//                 ParticleSystem.gameObject.SetActive(true);
-
-//             }
-//         }
-//         yield return new WaitForSeconds(ActiveFireDuration);
-        
-
-//          foreach(var ParticleSystem in FireParticle)
-//         {
-//             if(ParticleSystem != null) // if the particle system assigned
-//             {
-//                 ParticleSystem.gameObject.SetActive(false);
-
-//             }
-//         }
-//         yield return new WaitForSeconds(InActiveFireDuration);
-
-
-
-//         // Fire.gameObject.SetActive(true);
-//         // yield return new WaitForSeconds(ActiveFireDuration);
-
-//         // Fire.gameObject.SetActive(false);
-//         // yield return new WaitForSeconds(InActiveFireDuration);
-
-//     }
-
-//    }
+   
 }
